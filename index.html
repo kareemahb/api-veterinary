@@ -3,33 +3,99 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A quick dog-breed reference for veterinary practice staff: life span, weight ranges, size, breed group, and a Wikipedia overview."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="main.css" />
     <title>Vet Breed Reference</title>
   </head>
   <body>
-    <main class="container">
-      <header class="app-header">
-        <span class="icon">🐾</span>
-        <h1>Vet Breed Reference</h1>
+    <nav class="top-bar">
+      <div class="container top-bar-inner">
+        <span class="brand">
+          <svg class="paw" viewBox="0 0 64 64" aria-hidden="true">
+            <ellipse cx="32" cy="42" rx="14" ry="12" />
+            <ellipse cx="14" cy="26" rx="6" ry="8" />
+            <ellipse cx="25" cy="15" rx="6" ry="8" />
+            <ellipse cx="39" cy="15" rx="6" ry="8" />
+            <ellipse cx="50" cy="26" rx="6" ry="8" />
+          </svg>
+          Vet Breed Reference
+        </span>
+        <span class="top-bar-tag">For veterinary practice teams</span>
+      </div>
+    </nav>
 
-        <p>Quickly view general information about common dog breeds.</p>
-      </header>
+    <header class="app-header">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">Breed lookup</p>
+          <h1>Vet Breed Reference</h1>
+          <p class="hero-text">
+            Quickly view general information about common dog breeds, from
+            healthy weight ranges to life expectancy.
+          </p>
+        </div>
+
+        <aside class="fact-card" aria-live="polite">
+          <p class="fact-label">🐶 Did you know?</p>
+          <p id="dogFact">Fetching a dog fact...</p>
+        </aside>
+      </div>
+    </header>
+
+    <main class="container">
       <section class="search-section">
-        <form id="breedForm">
-          <label for="breedSelect"> Select a dog breed </label>
-          <select id="breedSelect">
-            <option value="">Breeds...</option>
-          </select>
-          <button type="submit">View Breed</button>
+        <form id="breedForm" novalidate>
+          <div class="field">
+            <label for="breedFilter">Search breeds</label>
+            <input
+              type="search"
+              id="breedFilter"
+              placeholder="Type to filter, e.g. Retriever"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="field">
+            <label for="breedSelect">Select a dog breed</label>
+            <select id="breedSelect">
+              <option value="">Loading breeds...</option>
+            </select>
+          </div>
+
+          <div class="form-buttons">
+            <button type="submit" class="btn-primary">View Breed</button>
+            <button type="button" id="randomButton" class="btn-secondary">
+              🎲 Random
+            </button>
+          </div>
         </form>
 
-        <p id="status"></p>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
       </section>
+
       <section id="breedResult" class="breed-result hidden">
         <div class="breed-header">
-          <img id="breedImage" src="" alt="" class="breed-image" />
+          <div class="image-frame">
+            <img id="breedImage" src="" alt="" class="breed-image hidden" />
+            <span
+              id="imagePlaceholder"
+              class="image-placeholder"
+              aria-hidden="true"
+              >🐕</span
+            >
+          </div>
 
           <div>
+            <p id="breedGroup" class="group-badge"></p>
             <h2 id="breedName"></h2>
             <p id="breedDescription"></p>
           </div>
@@ -39,42 +105,39 @@
           <h3>Breed Information</h3>
           <div class="info-grid">
             <article class="info-card">
+              <span class="info-icon" aria-hidden="true">⏳</span>
               <h4>Life Expectancy</h4>
               <p id="life"></p>
             </article>
 
             <article class="info-card">
+              <span class="info-icon" aria-hidden="true">♂</span>
               <h4>Male Weight</h4>
               <p id="maleWeight"></p>
             </article>
 
             <article class="info-card">
+              <span class="info-icon" aria-hidden="true">♀</span>
               <h4>Female Weight</h4>
               <p id="femaleWeight"></p>
             </article>
 
             <article class="info-card">
-              <h4>Origin</h4>
-              <p id="origin"></p>
+              <span class="info-icon" aria-hidden="true">📏</span>
+              <h4>Size</h4>
+              <p id="size"></p>
             </article>
 
             <article class="info-card">
-              <h4>Coat</h4>
-              <p id="coat"></p>
-            </article>
-            <article class="info-card">
-              <h4>Exercise</h4>
-              <p id="exercise"></p>
+              <span class="info-icon" aria-hidden="true">🏷️</span>
+              <h4>Breed Group</h4>
+              <p id="group"></p>
             </article>
 
             <article class="info-card">
+              <span class="info-icon" aria-hidden="true">🤧</span>
               <h4>Hypoallergenic</h4>
               <p id="hypoallergenic"></p>
-            </article>
-
-            <article class="info-card">
-              <h4>Temperament</h4>
-              <p id="temperament"></p>
             </article>
           </div>
         </section>
@@ -85,6 +148,16 @@
           <p class="api-label">Information retrieved from Wikipedia</p>
 
           <p id="wikiSummary">Loading additional information...</p>
+
+          <a
+            id="wikiLink"
+            class="wiki-link hidden"
+            href="#"
+            target="_blank"
+            rel="noopener"
+          >
+            Read more on Wikipedia ↗
+          </a>
         </section>
 
         <p class="disclaimer">
@@ -93,6 +166,13 @@
         </p>
       </section>
     </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>Data from the Dog API (dogapi.dog) and Wikipedia.</p>
+      </div>
+    </footer>
+
     <script src="main.js"></script>
   </body>
 </html>
